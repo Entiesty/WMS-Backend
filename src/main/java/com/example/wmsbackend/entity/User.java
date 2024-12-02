@@ -8,12 +8,12 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.Date;
+import java.sql.Timestamp;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("xumt_user")
+@TableName("xmut_user")
 public class User {
     @TableId(type = IdType.AUTO)
     private Long id;
@@ -23,7 +23,7 @@ public class User {
     private String role;
     private Integer status;
     @TableField("created_at")
-    private Date createdAt;
-    @TableField("update_at")
-    private Date updatedAt;
+    private Timestamp createdAt;
+    @TableField("updated_at")
+    private Timestamp updatedAt;
 }

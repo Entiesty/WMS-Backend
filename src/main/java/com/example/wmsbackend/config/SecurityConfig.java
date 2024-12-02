@@ -24,7 +24,7 @@ public class SecurityConfig {
         http.securityMatcher("/**") // 应用到所有路径
                 .csrf(AbstractHttpConfigurer::disable) // 禁用 CSRF
                 .authorizeHttpRequests(user -> user
-                        .requestMatchers("/user/**").permitAll() // 对于 `/auth/**` 路径，允许所有访问
+                        .requestMatchers("/auth/**").permitAll() // 对于 `/auth/**` 路径，允许所有访问
                         .anyRequest().authenticated() // 其他请求需要认证
                 )
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class); // 添加自定义 JWT 过滤器

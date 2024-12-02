@@ -18,13 +18,14 @@ public class JwtUtils {
     private static final SecretKey key = Keys.hmacShaKeyFor(secret.getBytes(StandardCharsets.UTF_8));
 
     public static String generateToken(String userName) {
-        return Jwts.builder()
+        return "Bearer " + Jwts.builder()
                 .subject(userName)
                 .issuedAt(DateUtil.date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))
                 .signWith(key)
                 .compact();
     }
+
     public static String getUserNameFromToken(String token) {
         return Jwts.parser()
                 .verifyWith(key)
