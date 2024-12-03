@@ -29,7 +29,7 @@ public class JwtUtils {
     }
 
     public String generateToken(String userName) {
-        return "Bearer " + Jwts.builder()
+        return Jwts.builder()
                 .subject(userName)
                 .issuedAt(DateUtil.date(System.currentTimeMillis()))
                 .expiration(new Date(System.currentTimeMillis() + expiration))

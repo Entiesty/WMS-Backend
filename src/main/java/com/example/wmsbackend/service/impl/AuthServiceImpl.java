@@ -6,6 +6,7 @@ import com.example.wmsbackend.service.RedisService;
 import com.example.wmsbackend.service.UserService;
 import com.example.wmsbackend.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -24,7 +25,14 @@ public class AuthServiceImpl implements AuthService {
             if (userService.validatePassword(userVo)) {
                 if (userService.isAccountEnabled(userVo)) {
                     redisService.storeToken(userVo.getUserName());
-                    return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("登录成功！", true));
+                    HttpHeaders headers = new HttpHeaders();
+                    headers.set("Authorization", "Bearer " + redisService.getToken(userVo.getUserName()));
+                    headers.add("Access-Control-Expose-Headers", "Authorization");
+                    System.out.println("这是TOKEN");
+                    System.out.println(redisService.getToken(userVo.getUserName()));
+                    System.out.println(headers.get("Authorization"));
+
+                    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponse("登录成功！", true));
                 }
                 return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse("账号已被禁用！", false));
             }
