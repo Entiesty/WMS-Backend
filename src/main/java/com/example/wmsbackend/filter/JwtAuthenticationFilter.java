@@ -19,6 +19,7 @@ import java.util.ArrayList;
 @RequiredArgsConstructor
 
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
+    private final JwtUtils jwtUtils;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, @NonNull HttpServletResponse response,
@@ -33,8 +34,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             token = token.substring(7); // 去掉 "Bearer "，获取实际的 token
 
             // 使用 JwtUtils 或其他工具类解析和验证 token
-            String username = JwtUtils.getUserNameFromToken(token);
-            if (username != null && JwtUtils.validateToken(token)) {
+            String username = jwtUtils.getUserNameFromToken(token);
+            if (username != null && jwtUtils.validateToken(token)) {
                 // 将认证信息放入 Spring Security 的上下文中
                 SecurityContextHolder.getContext().setAuthentication(
                         new UsernamePasswordAuthenticationToken(username, null, new ArrayList<>())

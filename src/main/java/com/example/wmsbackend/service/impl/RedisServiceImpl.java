@@ -12,10 +12,11 @@ import java.util.concurrent.TimeUnit;
 @RequiredArgsConstructor
 public class RedisServiceImpl implements RedisService {
     private final RedisTemplate<String, String> redisTemplate;
+    private final JwtUtils jwtUtils;
 
     @Override
     public void storeToken(String userName) {
-        String token = JwtUtils.generateToken(userName);
+        String token = jwtUtils.generateToken(userName);
 
         redisTemplate.opsForValue().set(userName, token,1, TimeUnit.HOURS);
     }
