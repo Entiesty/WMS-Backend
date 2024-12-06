@@ -1,7 +1,7 @@
 package com.example.wmsbackend.service.impl;
 
 import com.example.wmsbackend.entity.User;
-import com.example.wmsbackend.service.AuthService;
+import com.example.wmsbackend.service.AuthorizationService;
 import com.example.wmsbackend.service.RedisService;
 import com.example.wmsbackend.service.UserService;
 import com.example.wmsbackend.util.ApiResponse;
@@ -14,31 +14,36 @@ import org.springframework.stereotype.Service;
 
 @Service
 @RequiredArgsConstructor
-public class AuthServiceImpl implements AuthService {
+public class AuthorizationServiceImpl implements AuthorizationService {
     private final UserService userService;
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
 
     @Override
     public ResponseEntity<ApiResponse> login(User userVo) {
-        if (userService.getUserByUserName(userVo.getUserName()) != null) {
-            if (userService.validatePassword(userVo)) {
-                if (userService.isAccountEnabled(userVo)) {
-                    redisService.storeToken(userVo.getUserName());
-                    HttpHeaders headers = new HttpHeaders();
-                    headers.set("Authorization", "Bearer " + redisService.getToken(userVo.getUserName()));
-                    headers.add("Access-Control-Expose-Headers", "Authorization");
-                    System.out.println("这是TOKEN");
-                    System.out.println(redisService.getToken(userVo.getUserName()));
-                    System.out.println(headers.get("Authorization"));
-
-                    return ResponseEntity.status(HttpStatus.OK).headers(headers).body(new ApiResponse("登录成功！", true));
-                }
-                return ResponseEntity.status(HttpStatus.FORBIDDEN).body(new ApiResponse("账号已被禁用！", false));
-            }
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(new ApiResponse("密码错误！", false));
+        User user = userService.getUserByUserName(userVo.getUserName());
+        if (user == null) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ApiResponse("用户名不存在！", false));
         }
-        return ResponseEntity.status(HttpStatus.NOT_FOUND).body(new ApiResponse("用户名不存在！", false));
+        if (!userService.validatePassword(user)) {
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                    .body(new ApiResponse("密码错误！", false));
+        }
+        if (!userService.isAccountEnabled(user)) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                    .body(new ApiResponse("账号已被禁用！", false));
+        }
+
+        redisService.storeToken(userVo.getUserName());
+        String token = redisService.getToken(user.getUserName());
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", "Bearer " + token);
+        headers.add("Access-Control-Expose-Headers", "authorization");
+
+        return ResponseEntity.status(HttpStatus.OK)
+                .headers(headers)
+                .body(new ApiResponse("登录成功！", true));
     }
 
     @Override
