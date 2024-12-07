@@ -18,7 +18,7 @@ public class RedisServiceImpl implements RedisService {
     public void storeToken(String userName) {
         String token = jwtUtils.generateToken(userName);
 
-        redisTemplate.opsForValue().set(userName, token,1, TimeUnit.HOURS);
+        redisTemplate.opsForValue().set(userName, token, 1, TimeUnit.HOURS);
     }
 
     @Override

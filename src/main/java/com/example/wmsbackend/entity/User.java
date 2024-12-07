@@ -26,4 +26,6 @@ public class User {
     private Timestamp createdAt;
     @TableField("updated_at")
     private Timestamp updatedAt;
+    @TableField(exist = false)
+    private String captcha;
 }
