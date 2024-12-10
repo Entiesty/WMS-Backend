@@ -3,14 +3,19 @@ package com.example.wmsbackend.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.wmsbackend.converter.UserConverterMapper;
 import com.example.wmsbackend.entity.QueryPageParam;
 import com.example.wmsbackend.entity.ResponsePage;
 import com.example.wmsbackend.entity.User;
+import com.example.wmsbackend.entity.vo.UserVo;
 import com.example.wmsbackend.mapper.UserMapper;
 import com.example.wmsbackend.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -39,14 +44,20 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public ResponsePage<User> getUserPageData(QueryPageParam queryPageParam) {
+    public ResponsePage<UserVo> getUserPageData(QueryPageParam queryPageParam) {
         Page<User> page = new Page<>(queryPageParam.getCurrent(), queryPageParam.getSize());
 
         Page<User> queryPageUser = userMapper.selectPage(page, null);
-        ResponsePage<User> userPageData = new ResponsePage<>();
+        ResponsePage<UserVo> userPageData = new ResponsePage<>();
+
+        List<User> records = queryPageUser.getRecords();
+        List<UserVo> userVoList = new ArrayList<>();
+        for (User user : records) {
+            userVoList.add(UserConverterMapper.INSTANCE.toVO(user));
+        }
 
         userPageData.setTotal(queryPageUser.getTotal());
-        userPageData.setRecords(queryPageUser.getRecords());
+        userPageData.setRecords(userVoList);
 
         return userPageData;
     }
