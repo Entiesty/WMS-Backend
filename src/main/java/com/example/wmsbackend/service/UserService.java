@@ -11,4 +11,6 @@ public interface UserService extends IService<User> {
     boolean validatePassword(User user);
     boolean isAccountEnabled(User user);
     ResponsePage<UserVo> getUserPageData(QueryPageParam queryPageParam);
+    boolean removeUserById(Long id);
+    boolean updateUserById(UserVo userVo);
 }

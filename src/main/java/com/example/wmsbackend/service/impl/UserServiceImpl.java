@@ -16,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -60,5 +61,21 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         userPageData.setRecords(userVoList);
 
         return userPageData;
+    }
+
+    @Override
+    public boolean removeUserById(Long id) {
+        return this.removeById(id);
+    }
+
+    @Override
+    public boolean updateUserById(UserVo userVo) {
+        User user = UserConverterMapper.INSTANCE.toPO(userVo);
+        if (!Objects.equals(userVo.getPassword(), this.getById(userVo.getId()).getPassword())) {
+            String encryptedPassword = passwordEncoder.encode(userVo.getPassword());
+            user.setPassword(encryptedPassword);
+        }
+
+        return this.updateById(user);
     }
 }
