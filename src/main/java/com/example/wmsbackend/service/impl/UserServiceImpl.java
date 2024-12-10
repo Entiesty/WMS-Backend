@@ -1,7 +1,10 @@
 package com.example.wmsbackend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.example.wmsbackend.entity.QueryPageParam;
+import com.example.wmsbackend.entity.ResponsePage;
 import com.example.wmsbackend.entity.User;
 import com.example.wmsbackend.mapper.UserMapper;
 import com.example.wmsbackend.service.UserService;
@@ -13,6 +16,7 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements UserService {
     private final PasswordEncoder passwordEncoder;
+    private final UserMapper userMapper;
 
     @Override
     public User getUserByUserName(String userName) {
@@ -32,5 +36,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     @Override
     public boolean isAccountEnabled(User user) {
         return user.getStatus() == 0;
+    }
+
+    @Override
+    public ResponsePage<User> getUserPageData(QueryPageParam queryPageParam) {
+        Page<User> page = new Page<>(queryPageParam.getCurrent(), queryPageParam.getSize());
+
+        Page<User> queryPageUser = userMapper.selectPage(page, null);
+        ResponsePage<User> userPageData = new ResponsePage<>();
+
+        userPageData.setTotal(queryPageUser.getTotal());
+        userPageData.setRecords(queryPageUser.getRecords());
+
+        return userPageData;
     }
 }

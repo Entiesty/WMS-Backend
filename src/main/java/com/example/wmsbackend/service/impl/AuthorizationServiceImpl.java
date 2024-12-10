@@ -50,7 +50,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         redisService.storeToken(userVo.getUserName());
         String token = redisService.getToken(user.getUserName());
         HttpHeaders headers = new HttpHeaders();
-        headers.set("Authorization", "Bearer " + token);
+        headers.set("Authorization", token);
         headers.add("Access-Control-Expose-Headers", "authorization");
 
         return ResponseEntity.status(HttpStatus.OK)
