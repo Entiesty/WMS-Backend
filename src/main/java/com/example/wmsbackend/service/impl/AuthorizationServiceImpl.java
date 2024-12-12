@@ -1,5 +1,7 @@
 package com.example.wmsbackend.service.impl;
 
+import cn.hutool.captcha.CaptchaUtil;
+import cn.hutool.captcha.LineCaptcha;
 import com.example.wmsbackend.entity.User;
 import com.example.wmsbackend.service.AuthorizationService;
 import com.example.wmsbackend.service.RedisService;
@@ -15,6 +17,9 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -82,5 +87,23 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         redisService.deleteToken(username);
 
         return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("登出成功！", true));
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> getCaptcha(HttpServletResponse response, HttpServletRequest request)
+            throws IOException {
+        LineCaptcha captcha = CaptchaUtil.createLineCaptcha(100, 30, 4, 100);
+        String code = captcha.getCode();
+
+
+        String captchaKey = "captcha:" + request.getSession().getId();
+        System.out.println(captchaKey);
+        redisTemplate.opsForValue().set(captchaKey, code, 60, TimeUnit.SECONDS);
+
+        System.out.println("验证码已生成");
+        response.setContentType("image/png");
+        captcha.write(response.getOutputStream());
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("验证码已生成！", true));
     }
 }

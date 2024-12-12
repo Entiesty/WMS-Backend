@@ -1,5 +1,6 @@
 package com.example.wmsbackend.controller;
 
+import com.example.wmsbackend.converter.UserConverterMapper;
 import com.example.wmsbackend.entity.QueryPageParam;
 import com.example.wmsbackend.entity.ResponsePage;
 import com.example.wmsbackend.entity.vo.UserVo;
@@ -26,5 +27,10 @@ public class UserController {
     @PutMapping
     public boolean updateUserById(@RequestBody UserVo userVo) {
         return userService.updateUserById(userVo);
+    }
+
+    @GetMapping("/{userName}")
+    public UserVo getUserByUserName(@PathVariable String userName) {
+        return UserConverterMapper.INSTANCE.toVO(userService.getUserByUserName(userName));
     }
 }
