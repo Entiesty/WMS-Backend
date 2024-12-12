@@ -14,6 +14,8 @@ spring:
       host: localhost
       port: 6379
       password: null
+  jmx:
+    enabled: false
 
 jwt:
   secret: NKcdTFaPfQ4kr3pVbT3zz5LnKlJMm7PIKR3cbNGBakU=

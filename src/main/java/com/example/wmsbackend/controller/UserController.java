@@ -5,7 +5,9 @@ import com.example.wmsbackend.entity.QueryPageParam;
 import com.example.wmsbackend.entity.ResponsePage;
 import com.example.wmsbackend.entity.vo.UserVo;
 import com.example.wmsbackend.service.UserService;
+import com.example.wmsbackend.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,5 +34,10 @@ public class UserController {
     @GetMapping("/{userName}")
     public UserVo getUserByUserName(@PathVariable String userName) {
         return UserConverterMapper.INSTANCE.toVO(userService.getUserByUserName(userName));
+    }
+
+    @GetMapping("/validate-username")
+    public ResponseEntity<ApiResponse> validateUsername(@RequestParam String userName, @RequestParam Long userId) {
+        return userService.validateUserIsExisted(userName, userId);
     }
 }

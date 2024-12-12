@@ -10,7 +10,10 @@ import com.example.wmsbackend.entity.User;
 import com.example.wmsbackend.entity.vo.UserVo;
 import com.example.wmsbackend.mapper.UserMapper;
 import com.example.wmsbackend.service.UserService;
+import com.example.wmsbackend.util.ApiResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -77,5 +80,15 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
         }
 
         return this.updateById(user);
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> validateUserIsExisted(String userName, Long id) {
+        User existedUser = this.getById(id);
+        if(existedUser.getUserName().equals(userName)) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("用户名唯一！", true));
+        } else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse("用户名已存在！", false));
+        }
     }
 }
