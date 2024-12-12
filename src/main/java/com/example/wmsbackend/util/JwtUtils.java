@@ -46,7 +46,8 @@ public class JwtUtils {
                 .getSubject();
     }
 
-    public boolean validateToken(String token) {
+    //过期为True,未过期为False
+    public boolean validateTokenExpired(String token) {
         return Jwts.parser()
                 .verifyWith(key)
                 .build()

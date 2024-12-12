@@ -39,7 +39,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 String token = header.substring(7).trim(); // 去掉 "Bearer " 前缀，并清理空格
 
                 // 验证 Token 并获取用户名
-                if (!token.isEmpty() && !jwtUtils.validateToken(token)) {
+                if (!token.isEmpty() && !jwtUtils.validateTokenExpired(token)) {
                     String username = jwtUtils.getUserNameFromToken(token);
 
                     // 确保用户名不为空，设置认证信息到 Spring Security 上下文

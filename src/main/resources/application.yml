@@ -17,7 +17,7 @@ spring:
 
 jwt:
   secret: NKcdTFaPfQ4kr3pVbT3zz5LnKlJMm7PIKR3cbNGBakU=
-  expire: 360000000
+  expire: 3600000
 
 mybatis-plus:
   configuration:

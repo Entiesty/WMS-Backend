@@ -5,7 +5,9 @@ import com.example.wmsbackend.service.AuthorizationService;
 import com.example.wmsbackend.service.RedisService;
 import com.example.wmsbackend.service.UserService;
 import com.example.wmsbackend.util.ApiResponse;
+import com.example.wmsbackend.util.JwtUtils;
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.http.HttpHeaders;
@@ -21,6 +23,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private final RedisService redisService;
     private final PasswordEncoder passwordEncoder;
     private final RedisTemplate<String, String> redisTemplate;
+    private final JwtUtils jwtUtils;
 
     @Override
     public ResponseEntity<ApiResponse> login(User userVo, HttpServletRequest request) {
@@ -68,5 +71,16 @@ public class AuthorizationServiceImpl implements AuthorizationService {
             return ResponseEntity.status(HttpStatus.CREATED).body(new ApiResponse("注册成功！", true));
         }
         return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse("用户名已存在！", false));
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> logout(HttpServletRequest request) {
+        String header = request.getHeader("authorization");
+        String token = header.substring(7).trim();
+        String username = jwtUtils.getUserNameFromToken(token);
+
+        redisService.deleteToken(username);
+
+        return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("登出成功！", true));
     }
 }

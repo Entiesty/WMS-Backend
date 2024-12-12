@@ -8,4 +8,5 @@ import org.springframework.http.ResponseEntity;
 public interface AuthorizationService {
     ResponseEntity<ApiResponse> login(User user, HttpServletRequest request);
     ResponseEntity<ApiResponse> register(User user);
+    ResponseEntity<ApiResponse> logout(HttpServletRequest request);
 }
