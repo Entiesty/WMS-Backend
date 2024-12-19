@@ -36,8 +36,20 @@ public class UserController {
         return UserConverterMapper.INSTANCE.toVO(userService.getUserByUserName(userName));
     }
 
-    @GetMapping("/validate-username")
+    @GetMapping("/validate-username/update")
     public ResponseEntity<ApiResponse> validateUsername(@RequestParam String userName, @RequestParam Long userId) {
+        System.out.println("Received username: " + userName + ", userId: " + userId);
         return userService.validateUserIsExisted(userName, userId);
+    }
+
+    @GetMapping("/validate-username/add")
+    public ResponseEntity<ApiResponse> validateUsername(@RequestParam String userName) {
+        System.out.println("Received username: " + userName);
+        return userService.validateUserIsExisted(userName);
+    }
+
+    @PostMapping
+    public boolean addUser(@RequestBody UserVo userVo) {
+        return userService.addUser(userVo);
     }
 }

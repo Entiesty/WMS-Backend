@@ -18,8 +18,8 @@ public class AuthorizationController {
     private final AuthorizationService authorizationService;
 
     @PostMapping("/login")
-    public ResponseEntity<ApiResponse> login(@RequestBody User user, HttpServletRequest request) {
-        return authorizationService.login(user, request);
+    public ResponseEntity<ApiResponse> login(@RequestBody User user, HttpServletRequest request, HttpServletResponse response) {
+        return authorizationService.login(user, request, response);
     }
 
     @PostMapping("/register")

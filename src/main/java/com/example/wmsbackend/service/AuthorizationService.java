@@ -9,7 +9,7 @@ import org.springframework.http.ResponseEntity;
 import java.io.IOException;
 
 public interface AuthorizationService {
-    ResponseEntity<ApiResponse> login(User user, HttpServletRequest request);
+    ResponseEntity<ApiResponse> login(User user, HttpServletRequest request, HttpServletResponse response);
     ResponseEntity<ApiResponse> register(User user);
     ResponseEntity<ApiResponse> logout(HttpServletRequest request);
     ResponseEntity<ApiResponse> getCaptcha(HttpServletResponse response, HttpServletRequest request) throws IOException;

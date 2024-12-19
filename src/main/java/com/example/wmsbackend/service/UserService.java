@@ -16,4 +16,6 @@ public interface UserService extends IService<User> {
     boolean removeUserById(Long id);
     boolean updateUserById(UserVo userVo);
     ResponseEntity<ApiResponse> validateUserIsExisted(String userName, Long id);
+    ResponseEntity<ApiResponse> validateUserIsExisted(String userName);
+    boolean addUser(UserVo userVo);
 }

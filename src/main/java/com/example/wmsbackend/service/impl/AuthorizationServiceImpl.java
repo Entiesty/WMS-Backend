@@ -31,7 +31,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
     private final JwtUtils jwtUtils;
 
     @Override
-    public ResponseEntity<ApiResponse> login(User userVo, HttpServletRequest request) {
+    public ResponseEntity<ApiResponse> login(User userVo, HttpServletRequest request, HttpServletResponse response) {
         String captchaKey = "captcha:" + request.getSession().getId();
         String correctCaptcha = redisTemplate.opsForValue().get(captchaKey);
 
@@ -60,6 +60,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         HttpHeaders headers = new HttpHeaders();
         headers.set("Authorization", token);
         headers.add("Access-Control-Expose-Headers", "authorization");
+        response.setHeader("role", user.getRole());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .headers(headers)

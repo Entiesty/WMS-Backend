@@ -11,14 +11,13 @@ import com.example.wmsbackend.entity.vo.UserVo;
 import com.example.wmsbackend.mapper.UserMapper;
 import com.example.wmsbackend.service.UserService;
 import com.example.wmsbackend.util.ApiResponse;
+import com.example.wmsbackend.util.PaginationUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Objects;
 
 @Service
@@ -51,20 +50,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     public ResponsePage<UserVo> getUserPageData(QueryPageParam queryPageParam) {
         Page<User> page = new Page<>(queryPageParam.getCurrent(), queryPageParam.getSize());
 
-        Page<User> queryPageUser = userMapper.selectPage(page, null);
-        ResponsePage<UserVo> userPageData = new ResponsePage<>();
-
-        List<User> records = queryPageUser.getRecords();
-        List<UserVo> userVoList = new ArrayList<>();
-        for (User user : records) {
-            userVoList.add(UserConverterMapper.INSTANCE.toVO(user));
-        }
-
-        userPageData.setTotal(queryPageUser.getTotal());
-        userPageData.setRecords(userVoList);
-
-        return userPageData;
+        // 使用 PaginationUtil 获取分页数据
+        return PaginationUtil.getPaginatedData(page,
+                (p) -> userMapper.selectPage(p, null),   // 查询方法，获取 User 数据
+                UserConverterMapper.INSTANCE::toVO // 转换方法，将 User 转为 UserVo
+        );
     }
+
 
     @Override
     public boolean removeUserById(Long id) {
@@ -83,12 +75,33 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements Us
     }
 
     @Override
-    public ResponseEntity<ApiResponse> validateUserIsExisted(String userName, Long id) {
-        User existedUser = this.getById(id);
-        if(existedUser.getUserName().equals(userName)) {
+    public ResponseEntity<ApiResponse> validateUserIsExisted(String newUserName, Long id) {
+        String currentUserName = this.getById(id).getUserName();
+        if (currentUserName.equals(newUserName)) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("用户名唯一！", true));
+        } else if (this.getUserByUserName(newUserName) == null) {
+            return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("用户名唯一！", true));
+        }
+        else {
+            return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse("用户名已存在！", false));
+        }
+    }
+
+    @Override
+    public ResponseEntity<ApiResponse> validateUserIsExisted(String userName) {
+        if(this.getUserByUserName(userName) == null) {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("用户名唯一！", true));
         } else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse("用户名已存在！", false));
         }
+    }
+
+    @Override
+    public boolean addUser(UserVo userVo) {
+        User user = UserConverterMapper.INSTANCE.toPO(userVo);
+        String encryptedPassword = passwordEncoder.encode(userVo.getPassword());
+        user.setPassword(encryptedPassword);
+
+        return this.save(user);
     }
 }

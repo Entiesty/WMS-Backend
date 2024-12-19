@@ -8,21 +8,23 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.util.ArrayList;
+import java.sql.Timestamp;
 import java.util.List;
 
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@TableName("xmut_route")
-public class Route {
+@TableName("xmut_warehouse")
+public class Warehouse {
     @TableId(type = IdType.AUTO)
     private Long id;
-    private String path;
-    private String name;
-    @TableField("parent_id")
-    private Long parentId;
-    private String role;
+    @TableField("warehouse_name")
+    private String warehouseName;
+    private String location;
+    @TableField("created_at")
+    private Timestamp createdAt;
+    @TableField("updated_at")
+    private Timestamp updatedAt;
     @TableField(exist = false)
-    private List<Route> children = new ArrayList<>();
+    private List<String> roles;
 }
