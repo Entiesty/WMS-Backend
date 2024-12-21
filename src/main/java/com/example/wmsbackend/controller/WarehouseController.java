@@ -3,6 +3,7 @@ package com.example.wmsbackend.controller;
 import com.example.wmsbackend.converter.WarehouseConverterMapper;
 import com.example.wmsbackend.entity.QueryPageParam;
 import com.example.wmsbackend.entity.ResponsePage;
+import com.example.wmsbackend.entity.Warehouse;
 import com.example.wmsbackend.entity.vo.WarehouseVo;
 import com.example.wmsbackend.service.WarehouseService;
 import com.example.wmsbackend.util.ApiResponse;
@@ -10,11 +11,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/warehouse")
 @RequiredArgsConstructor
 public class WarehouseController {
     private final WarehouseService warehouseService;
+
+    @GetMapping
+    public List<Warehouse> getWarehouseList() {
+        return warehouseService.list();
+    }
 
     @PostMapping("/list")
     public ResponsePage<WarehouseVo> getWarehouseByPage(@RequestBody QueryPageParam queryPageParam) {

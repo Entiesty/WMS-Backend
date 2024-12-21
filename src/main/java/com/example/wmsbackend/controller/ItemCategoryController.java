@@ -9,11 +9,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/item-category")
 @RequiredArgsConstructor
 public class ItemCategoryController {
     private final ItemCategoryService itemCategoryService;
+
+    @GetMapping
+    public List<ItemCategory> getItemCategoryList() {
+        return itemCategoryService.list();
+    }
 
     @PostMapping("/list")
     public ResponsePage<ItemCategory> getItemCategoryByPage(@RequestBody QueryPageParam queryPageParam) {
