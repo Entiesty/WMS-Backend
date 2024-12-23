@@ -3,6 +3,7 @@ package com.example.wmsbackend.controller;
 import com.example.wmsbackend.converter.UserConverterMapper;
 import com.example.wmsbackend.entity.QueryPageParam;
 import com.example.wmsbackend.entity.ResponsePage;
+import com.example.wmsbackend.entity.User;
 import com.example.wmsbackend.entity.vo.UserVo;
 import com.example.wmsbackend.service.UserService;
 import com.example.wmsbackend.util.ApiResponse;
@@ -10,11 +11,18 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+
+    @GetMapping
+    public List<User> getUserList() {
+        return userService.list();
+    }
 
     @PostMapping("/list")
     public ResponsePage<UserVo> getUserByPage(@RequestBody QueryPageParam queryPageParam) {

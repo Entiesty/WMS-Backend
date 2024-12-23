@@ -1,6 +1,7 @@
 package com.example.wmsbackend.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.example.wmsbackend.entity.Item;
@@ -17,6 +18,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -48,7 +51,6 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
 
     @Override
     public boolean updateItemById(ItemVo itemVo) {
-
         return this.updateById(itemVoToPo(itemVo));
     }
 
@@ -80,7 +82,8 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("商品名称唯一！", true));
         } else if (this.getItemByItemName(itemName) == null) {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("商品名称唯一！", true));
-        } else {
+        }
+        else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse("商品名称已存在！", false));
         }
     }
@@ -89,7 +92,8 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
     public ResponseEntity<ApiResponse> validateItemNameIsExisted(String itemName) {
         if (this.getItemByItemName(itemName) == null) {
             return ResponseEntity.status(HttpStatus.OK).body(new ApiResponse("商品名称唯一！", true));
-        } else {
+        }
+        else {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(new ApiResponse("商品名称已存在！", false));
         }
     }
@@ -98,5 +102,11 @@ public class ItemServiceImpl extends ServiceImpl<ItemMapper, Item> implements It
         LambdaQueryWrapper<Item> wrapper = new LambdaQueryWrapper<>();
         wrapper.eq(Item::getItemName, itemName);
         return this.getOne(wrapper);
+    }
+
+    // 根据物品名称查询Item列表，去掉括号中的内容
+    public List<Item> findItemsByName(String cleanedItemName) {
+        // 使用 MyBatis-Plus 提供的 QueryWrapper 进行查询
+        return this.list(new QueryWrapper<Item>().like("item_name", cleanedItemName).select("id", "item_name", "warehouse_id"));
     }
 }

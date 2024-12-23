@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 @AllArgsConstructor
 @NoArgsConstructor
 public class ItemVo {
-
     private Long id;
     private String itemName;
     private BigDecimal price;
