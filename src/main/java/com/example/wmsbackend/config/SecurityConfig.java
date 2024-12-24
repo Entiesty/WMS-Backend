@@ -37,7 +37,7 @@ public class SecurityConfig {
     // CORS 配置源
     private CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(List.of("http://localhost:5173")); // 允许的源
+        configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5175")); // 允许的源
         configuration.setAllowedMethods(List.of("*")); // 允许的方法
         configuration.setAllowedHeaders(List.of("*")); // 允许的头
         configuration.setExposedHeaders(List.of("role", "username"));

@@ -4,6 +4,7 @@ import cn.hutool.core.date.DateUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.example.wmsbackend.entity.Item;
 import com.example.wmsbackend.entity.StockTransaction;
+import com.example.wmsbackend.entity.vo.StockTransactionRankingVo;
 import com.example.wmsbackend.entity.vo.StockTransactionVo;
 import com.example.wmsbackend.service.ItemService;
 import com.example.wmsbackend.service.UserService;
@@ -102,6 +103,11 @@ public class StockTransactionConverter {
     // 格式化字符串为时间戳
     public Timestamp dateToTimestamp(String date) {
         return date == null ? null : Timestamp.valueOf(date);
+    }
+
+    // 从 StockTransaction 转换为 StockTransactionRankingVo
+    public StockTransactionRankingVo toRankingVO(String itemName, Long totalIn, Long totalOut) {
+        return new StockTransactionRankingVo(itemName, totalIn, totalOut);
     }
 }
 

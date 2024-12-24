@@ -9,6 +9,7 @@ import com.example.wmsbackend.entity.Item;
 import com.example.wmsbackend.entity.QueryPageParam;
 import com.example.wmsbackend.entity.ResponsePage;
 import com.example.wmsbackend.entity.StockTransaction;
+import com.example.wmsbackend.entity.vo.StockTransactionRankingVo;
 import com.example.wmsbackend.entity.vo.StockTransactionVo;
 import com.example.wmsbackend.mapper.StockTransactionMapper;
 import com.example.wmsbackend.service.ItemService;
@@ -20,6 +21,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.time.LocalDate;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +43,21 @@ public class StockTransactionServiceImpl extends ServiceImpl<StockTransactionMap
                 (p) -> stockTransactionMapper.selectPage(p, null),
                 stockTransactionConverter::toVO
         );
+    }
+
+    @Override
+    public List<StockTransactionRankingVo> getStockTransactionRanking(LocalDate startDate, LocalDate endDate) {
+        // 获取数据库查询结果
+        List<StockTransactionRankingVo> stockTransactions = stockTransactionMapper.getTopStockTransactions(startDate, endDate);
+
+        // 返回转换后的数据
+        return stockTransactions.stream()
+                .map(stockTransaction -> stockTransactionConverter.toRankingVO(
+                        stockTransaction.getItemName(),
+                        stockTransaction.getTotalIn(),
+                        stockTransaction.getTotalOut()
+                ))
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -113,5 +133,6 @@ public class StockTransactionServiceImpl extends ServiceImpl<StockTransactionMap
         // 正则：去掉末尾括号及括号里的内容
         return input.replaceAll("\\s?\\([^)]+\\)$", "");
     }
+
 
 }
