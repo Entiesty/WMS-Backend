@@ -47,3 +47,7 @@ springdoc:
 
 knife4j:
   enable: true
+logging:
+  level:
+    root: INFO
+    .com.example: DEBUG

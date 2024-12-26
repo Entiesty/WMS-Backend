@@ -62,6 +62,7 @@ public class AuthorizationServiceImpl implements AuthorizationService {
         headers.add("Access-Control-Expose-Headers", "authorization");
         response.setHeader("role", user.getRole());
         response.setHeader("username", user.getUserName());
+        response.setHeader("status", user.getStatus().toString());
 
         return ResponseEntity.status(HttpStatus.OK)
                 .headers(headers)

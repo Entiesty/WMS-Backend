@@ -121,6 +121,19 @@
             <artifactId>spring-boot-starter-data-redis</artifactId>
             <version>3.3.5</version>
         </dependency>
+
+        <!-- 排除默认的日志框架 Logback -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-logging</artifactId>
+            <scope>provided</scope>
+        </dependency>
+
+        <!-- 添加 Log4j2 相关依赖 -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-log4j2</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

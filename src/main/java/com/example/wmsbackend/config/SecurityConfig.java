@@ -40,7 +40,7 @@ public class SecurityConfig {
         configuration.setAllowedOrigins(List.of("http://localhost:5173", "http://localhost:5175")); // 允许的源
         configuration.setAllowedMethods(List.of("*")); // 允许的方法
         configuration.setAllowedHeaders(List.of("*")); // 允许的头
-        configuration.setExposedHeaders(List.of("role", "username"));
+        configuration.setExposedHeaders(List.of("role", "username", "status"));
         configuration.setAllowCredentials(true); // 是否允许携带凭证
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
